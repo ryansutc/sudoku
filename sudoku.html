@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+
+   <head>
+   <!--
+	--------------------------------------
+      New Perspectives on HTML and CSS
+      Tutorial 5
+      Case Problem 1
+
+      Sudoku Puzzle
+      Author: Ryan Sutcliffe
+      Date:   Nov 25, 2015
+
+      Filename:         sudoku.htm
+      Supporting files: gold.jpg, green.jpg, jpf.css, jpf.jpg, 
+                        modernizr-1.5.js, stable.css,
+	  Notes: Firefox renders tables funny on resize due to known bug: 
+	  http://stackoverflow.com/questions/2061775/why-is-firefox-missing-the-border-on-some-html-tables
+	----------------------------------------
+   -->
+
+      <meta charset="UTF-8" />
+      <title>Daily Sudoku Puzzle</title>
+      <script src="modernizr-1.5.js"></script>
+		<script src="https://code.jquery.com/jquery-1.10.2.js"></script> 
+		<script src="stable.js"></script>
+		<script src="solution.js"></script>
+		<link rel="stylesheet" type="text/css" href="jpf.css" />
+		<link rel="stylesheet" type="text/css" href="stable.css" />
+   </head>
+
+   <body onload="onLoad()">
+      <header>
+         <img src="jpf.jpg" alt="The Japanese Puzzle Factory" />
+      </header>
+
+      <nav class="horizontal">
+         <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Online Puzzles</a></li>
+            <li><a href="#">Store</a></li>
+            <li><a href="#">Tips and Hints</a></li>
+            <li><a href="#">Forum</a></li>
+            <li><a href="#">Competitions</a></li>
+            <li><a href="#">Site Map</a></li>
+         </ul>
+      </nav>
+
+      <nav class="vertical">
+         <ul>
+            <li><a href="#">Akari</a></li>
+            <li><a href="#">Divide by Box</a></li>
+            <li><a href="#">Fillomino</a></li>
+            <li><a href="#">Hashiwokakero</a></li>
+            <li><a href="#">Heyawake</a></li>
+            <li><a href="#">Hitori</a></li>
+            <li><a href="#">Kakuro</a></li>
+            <li><a href="#">Katagaku</a></li>
+            <li><a href="#">Masugo</a></li>
+            <li><a href="#">Masyu</a></li>
+            <li><a href="#">Nonogram</a></li>
+            <li><a href="#">Oekaki Logic</a></li>
+            <li><a href="#">Shikaku</a></li>
+            <li><a href="#">Sudoku</a></li>
+            <li><a href="#">Suhai</a></li>
+            <li><a href="#">Super Sudoku</a></li>
+            <li><a href="#">Tenketsu</a></li>
+            <li><a href="#">Tentai Show</a></li>
+            <li><a href="#">Wordoku</a></li>
+            <li><a href="#">Yajilin</a></li>
+         </ul>
+      </nav>
+
+      <section id="main">
+				<table class="spuzzle" caption="sudoku game">
+					<tr>
+						<th></th>
+						<th>1</th>
+						<th>2</th>
+						<th>3</th>
+						<th>4</th>
+						<th>5</th>
+						<th>6</th>
+						<th>7</th>
+						<th>8</th>
+						<th>9</th>
+					</tr>
+					<!--A-->
+					<tr>
+						<th>A</th>
+						<td rowspan="3" colspan="3" class="green">
+							<table style="border:solid" class="subTable" id="1">
+								<tr>
+									<td id="a1"></td>
+									<td id="a2"></td>
+									<td id="a3"></td>
+								</tr>
+								<tr>
+									<td id="b1"></td>
+									<td id="b2"></td>
+									<td id="b3"></td>
+								</tr>
+								<tr>
+									<td id="c1"></td>
+									<td id="c2"></td>
+									<td id="c3"></td>
+								</tr>
+							</table>
+						</td>
+						<td rowspan="3" colspan="3" class="gold">
+							<table style="border:solid" class="subTable" id="2">
+								<tr>
+									<td id="a4"></td>
+									<td id="a5"></td>
+									<td id="a6"></td>
+								</tr>
+								<tr>
+									<td id="b4"></td>
+									<td id="b5"></td>
+									<td id="b6"></td>
+								</tr>
+								<tr>
+									<td id="c4"></td>
+									<td id="c5"></td>
+									<td id="c6"></td>
+								</tr>
+							</table>
+						</td>
+						<td rowspan="3" colspan="3" class="green">
+							<table style="border:solid" class="subTable" id="3">
+								<tr>
+									<td id="a7"></td>
+									<td id="a8"></td>
+									<td id="a9"></td>
+								</tr>
+								<tr>
+									<td id="b7"></td>
+									<td id="b8"></td>
+									<td id="b9"></td>
+								</tr>
+								<tr>
+									<td id="c7"></td>
+									<td id="c8"></td>
+									<td id="c9"></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<!--B-->
+					<tr>
+						<th>B</th>
+					</tr>
+					<!--C-->
+					<tr>
+						<th>C</th>
+					</tr>
+					<!--D-->
+					<tr>
+						<th>D</th>
+						<td rowspan="3" colspan="3" class="gold">
+							<table style="border:solid" class="subTable" id="4">
+								<tr>
+									<td id="d1"></td>
+									<td id="d2"></td>
+									<td id="d3"></td>
+								</tr>
+								<tr>
+									<td id="e1"></td>
+									<td id="e2"></td>
+									<td id="e3"></td>
+								</tr>
+								<tr>
+									<td id="f1"></td>
+									<td id="f2"></td>
+									<td id="f3"></td>
+								</tr>
+							</table>
+						</td>
+						<td rowspan="3" colspan="3" class="green">
+							<table style="border:solid" class="subTable" id="5">
+								<tr>
+									<td id="d4"></td>
+									<td id="d5"></td>
+									<td id="d6"></td>
+								</tr>
+								<tr>
+									<td id="e4"></td>
+									<td id="e5"></td>
+									<td id="e6"></td>
+								</tr>
+								<tr>
+									<td id="f4"></td>
+									<td id="f5"></td>
+									<td id="f6"></td>
+								</tr>
+							</table>
+						</td>
+						<td rowspan="3" colspan="3" class="gold">
+							<table style="border:solid" class="subTable" id="6">
+								<tr>
+									<td id="d7"></td>
+									<td id="d8"></td>
+									<td id="d9"></td>
+								</tr>
+								<tr>
+									<td id="e7"></td>
+									<td id="e8"></td>
+									<td id="e9"></td>
+								</tr>
+								<tr>
+									<td id="f7"></td>
+									<td id="f8"></td>
+									<td id="f9"></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<!--E-->
+					<tr>
+						<th>E</th>
+					</tr>
+					<!--F-->
+					<tr>
+						<th>F</th>
+					</tr>
+					<!--G-->
+					<tr>
+						<th>G</th>
+						<td rowspan="3" colspan="3" class="green">
+							<table style="border:solid" class="subTable" id="7">
+								<tr>
+									<td id="g1"></td>
+									<td id="g2"></td>
+									<td id="g3"></td>
+								</tr>
+								<tr>
+									<td id="h1"></td>
+									<td id="h2"></td>
+									<td id="h3"></td>
+								</tr>
+								<tr>
+									<td id="i1"></td>
+									<td id="i2"></td>
+									<td id="i3"></td>
+								</tr>
+							</table>
+						</td>
+						<td rowspan="3" colspan="3" class="gold">
+							<table style="border:solid" class="subTable" id="8">
+								<tr>
+									<td id="g4"></td>
+									<td id="g5"></td>
+									<td id="g6"></td>
+								</tr>
+								<tr>
+									<td id="h4"></td>
+									<td id="h5"></td>
+									<td id="h6"></td>
+								</tr>
+								<tr>
+									<td id="i4"></td>
+									<td id="i5"></td>
+									<td id="i6"></td>
+								</tr>
+							</table>
+						</td>
+						<td rowspan="3" colspan="3" class="green">
+							<table style="border:solid" class="subTable" id="9">
+								<tr>
+									<td id="g7"></td>
+									<td id="g8"></td>
+									<td id="g9"></td>
+								</tr>
+								<tr>
+									<td id="h7"></td>
+									<td id="h8"></td>
+									<td id="h9"></td>
+								</tr>
+								<tr>
+									<td id="i7"></td>
+									<td id="i8"></td>
+									<td id="i9"></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<!--H-->
+					<tr>
+						<th>H</th>
+						
+					</tr>
+					<!--I-->
+					<tr>
+						<th>I</th>
+					</tr>
+				</table>
+				<div class="buttons">
+					<div id="validation"></div>
+					<p id="problemID">Problem #1</p>
+					<button id="reset" onclick="onLoad('current')"> Reset </button> 
+					<button id="answer" onclick="onLoad('solution')"> Show Answer </button>
+					<button id="new" onclick="onLoad('next')"> New Problem </button>
+					<button id="evaluate" onclick="evaluateProblem()"> Evaluate Problem</button>
+					<button id="create" onclick="onLoad('create')">Create Problem</button>
+				</div>
+				
+         <article>
+				<p id="problemnotes">enter notes here</p>
+            <h1>To Play</h1>
+            <p>Sudoku is played on a 9x9 grid with nine 3x3 boxes
+               placed within the grid. Enter a digit from 1 to 9 in
+               each table cell. A few starting numbers have been
+               supplied for you. The digits from 1 to 9 can appear
+               only once each in every row, column, and box in the
+               table (diagonals don't count). Every Sudoku puzzle
+               has a unique solution.
+            </p>
+				<h1>To Create</h2>
+				<p>You can create or load your own sudoku problem by
+				clicking create problem. As you fill in the cells you 
+				can click evaluate to verify if your problem is solvable
+				with a unique solution. Also each time you hit evaluate the 
+				puzzle will then reset to the evaluated state-- allowing 
+				you to try the puzzle as many times as you want.</p>
+				<p>You can even solve your puzzle by clicking the solve 
+				button. I've borrowed code created by this gentleman 
+				<a href="https://attractivechaos.wordpress.com/2011/06/19/an-incomplete-review-of-sudoku-solver-implementations/">here</a>
+				which consists of a very fast algorithm to solve the problem. 
+				</p>
+            <p>Good luck!</p>
+         </article>
+
+      </section>
+
+   </body>
+
+</html>

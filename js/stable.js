@@ -1238,13 +1238,13 @@ function evaluateProblem(){
 	document.getElementById("problemnotes").innerHTML += "<br />" + time;
 	if (x.length === 0) {
 		document.getElementById("problemnotes").innerHTML += "<br />This problem has no Solution";
-		document.getElementById("validation").innerHTML = "<img src='x.png' style='width:24px' alt='error'/>"
+		document.getElementById("validation").innerHTML = "<img src='images/x.png' style='width:24px' alt='error'/>"
 		return "error";
 	}
 	else {
 		if (x.length === 1){
 			document.getElementById("problemnotes").innerHTML += "<br />Unique Solution";
-			document.getElementById("validation").innerHTML = "<img src='check.png' style='width:24px' alt='check'/>"
+			document.getElementById("validation").innerHTML = "<img src='images/check.png' style='width:24px' alt='check'/>"
 			
 			var i = 0;
 			for (c in mysudoku.solution){
@@ -1258,7 +1258,7 @@ function evaluateProblem(){
 		}
 		else {
 			document.getElementById("problemnotes").innerHTML += "<br />Multiple Solutions";
-			document.getElementById("validation").innerHTML = "<img src='warning.jpg' style='width:24px' alt='warning'/>"
+			document.getElementById("validation").innerHTML = "<img src='images/warning.jpg' style='width:24px' alt='warning'/>"
 			return "warning";
 		}
 	}

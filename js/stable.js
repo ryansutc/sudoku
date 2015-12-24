@@ -928,26 +928,6 @@ function loadXMLFile(xmlfile){
 		return;
 	}
 }
-function processXMLFile(xml){
-	/*---------------------
-		processXMLFile is a function called to load 
-		an external xml file containing a sudoku
-		problem and solution. the function is called
-		by the onload function when a user requests
-		a new file. It calls processXMLFile function.
-		NOT USED IN THIS VERSION
-	*--------------------------
-	*/
-	
-	 var xmlDoc = xml.responseXML;
-	 var xmllist = xmlDoc.getElementsByTagName("cell");
-	 for (var i in xmllist){
-		//this will work for the problem b/c it's value will be first. [todo: make better]
-		var mycellid = xmllist[i].id
-		mysudoku.problem[mycellid] = xmllist[i].innerHTML;
-		//alert("assigned")
-	}
-}
  
 function loadProblem(){
 	/*---------------------

@@ -14,8 +14,11 @@
 	of what it does.
 * -----------------------------------
 */
-sudokuXMLfileNo = 1
-blankproblem = {
+
+"use strict";
+
+var sudokuXMLfileNo = 1;
+var blankproblem = {
 		a1:'',
 		a2:'',
 		a3:'',
@@ -99,7 +102,7 @@ blankproblem = {
 		i9:''
 	};
 
-blanksolution = {
+var blanksolution = {
 	a1:'',
 	a2:'',
 	a3:'',
@@ -182,7 +185,7 @@ blanksolution = {
 	i8:'',
 	i9:''
 };
-problem1 = {
+var problem1 = {
 	a1:'',
 	a2:'',
 	a3:'4',
@@ -210,7 +213,6 @@ problem1 = {
 	c7:'2',
 	c8:'',
 	c9:'',
-	c1:'',
 	d1:'',
 	d2:'',
 	d3:'',
@@ -267,7 +269,7 @@ problem1 = {
 	i9:''
 };	
 
-solution1 = {
+var solution1 = {
 	a1:'1',
 	a2:'2',
 	a3:'4',
@@ -352,7 +354,7 @@ solution1 = {
 
 };
 
-problem2 = {
+var problem2 = {
 	a1:'',
 	a2:'4',
 	a3:'7',
@@ -436,7 +438,7 @@ problem2 = {
 	i9:''
 };
 
-solution2 = {
+var solution2 = {
 	
 	a1:'9',
 	a2:'4',
@@ -521,7 +523,7 @@ solution2 = {
 	i9:'4'
 };
 
-problem3 = {
+var problem3 = {
 	a1:'6',
 	a2:'',
 	a3:'',
@@ -605,7 +607,7 @@ problem3 = {
 	i9:'2'
 };
 
-solution3 = {
+var solution3 = {
 	a1:'6',
 	a2:'9',
 	a3:'8',
@@ -689,12 +691,10 @@ solution3 = {
 	i9:'2'
 };
 
-//
-	//GLOBAL Variable. whenever a conflicting value is entered 
-	//in the sudoku, the error object populates the cell attribute
-	//with the other cell that it conflicts with
+
 var mysudoku = {};
-	errors = {
+
+var errors = {
 		a1:[],
 		a2:[],
 		a3:[],
@@ -800,6 +800,7 @@ function onLoad(loadtype) {
 	
 	//some special jquery stuff called to handle input text
 	$(document).ready(function(){
+		
 		//remove anything from validation if reset
 		document.getElementById("validation").innerHTML = "";
 		document.getElementById("problemnotes").innerHTML = "";
@@ -809,6 +810,7 @@ function onLoad(loadtype) {
 			loadNewList();
 			loadProblem();
 			setTextArea();
+			resetErrors(errors);
 		}	
 		//NEW PROBLEM
 		else if (loadtype === 'next') {
@@ -820,12 +822,14 @@ function onLoad(loadtype) {
 			loadNewList();
 			loadProblem();
 			setTextArea();
+			resetErrors(errors);
 		}
 		//RESET PROBLEM
 		else if (loadtype === 'current') {
 			loadNewList();
 			loadProblem();
 			setTextArea();
+			resetErrors(errors);
 		}
 		//CREATE PROBLEM
 		else if (loadtype === 'create'){
@@ -833,16 +837,19 @@ function onLoad(loadtype) {
 			loadNewList();
 			loadProblem();
 			setTextArea();
+			resetErrors(errors);
 		}
 		//LOAD SOLUTION 
 		else if (loadtype === 'solution') {
 			//SOLUTION to existing problem
 			if (sudokuXMLfileNo != 0){
 				loadSolution();
+				resetErrors(errors);
 			}
 			//SOLUTION to created problem
 			else {
 				findSolution();
+				resetErrors(errors);
 			}
 		}
 		
@@ -889,46 +896,7 @@ function loadNewList(){
 	
 	document.getElementById("problemID").innerHTML = "Problem #" + sudokuXMLfileNo; 
 } 
-function loadXMLFile(xmlfile){
-	/*---------------------
-		loadXMLFile is supposed to access external
-		xml files to load different problem/solution 
-		combinations. Based on IE security against 
-		cross browser scripting, it is really difficult 
-		to run this stuff locally in a file system. For that
-		reason in this version of the javascript file this 
-		does not run. 
-		
-		function called to load 
-		an external xml file containing a sudoku
-		problem and solution. the function is called
-		by the onload function when a user requests
-		a new file. It calls processXMLFile function.
-	*--------------------------
-	*/
-	//need to test if browser is ie and use XDomainRequest instead for ie < 10.
-	//see http://cypressnorth.com/programming/internet-explorer-aborting-ajax-requests-fixed/
-	
-	//this should work in ie 10+ (online) and works in firefox:
-	var xhttp = new XMLHttpRequest(xmlfile);
-	//set to run when the ready state of the server changes
-	xhttp.onreadystatechange = function(){
-		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			//you can get the response text as a string or as xml
-			processXMLFile(xhttp);
-		}
-	};
-	// get request to server. true means ansyncronous but doesn't work. Left to syncronous for now even though not recommended.
-	sudokuXMLfileNo = sudokuXMLfileNo + 1
-	xhttp.open("GET", "xmlfiles/sudoku" + sudokuXMLfileNo + ".xml", false);
-	xhttp.send();
-	//if you've gone to last xml file, restart with preloaded javascript problem.
-	if (xhttp.status === 404){
-		sudokuXMLfileNo = 0;
-		return;
-	}
-}
- 
+
 function loadProblem(){
 	/*---------------------
 		loadProblem is a function called to load 
@@ -973,7 +941,7 @@ function updateProblem(mycellid, mygrpid){
 		Source notes: http://www.quirksmode.org/js/associative.html
 		https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects
 	*/
-	mytextarea = document.getElementById(mycellid).childNodes[0];
+	var mytextarea = document.getElementById(mycellid).childNodes[0];
 	mysudoku.problem[mycellid] = mytextarea.value;
 	
 	validateProblem(mycellid, mygrpid, mytextarea);
@@ -1151,7 +1119,7 @@ function highlightCells(){
 		ones with an error in them.
 	*--------------------------
 	*/
-	for (z in errors){
+	for (var z in errors){
 		
 		if (errors[z].length > 0){
 			//alert("the length of " + z + " is " + errors[z].length);
@@ -1261,5 +1229,12 @@ function findSolution(){
 	}
 	else {
 		loadSolution();
+	}
+}
+
+function resetErrors(myObj){
+	//resets the error object on reset of table
+	for (var i in myObj){
+		myObj[i] = [];
 	}
 }

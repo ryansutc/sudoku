@@ -18,6 +18,9 @@
 "use strict";
 
 var sudokuXMLfileNo = 1;
+	//problem is the id/value pair for the sudoku problem
+	//solution is the partner solution
+	//(See Excel sheet for easy creation/manipulation.)
 var blankproblem = {
 		a1:'',
 		a2:'',
@@ -438,8 +441,7 @@ var problem2 = {
 	i9:''
 };
 
-var solution2 = {
-	
+var solution2 = {	
 	a1:'9',
 	a2:'4',
 	a3:'7',
@@ -790,14 +792,6 @@ function onLoad(loadtype) {
 	* ---------------------------------
 	*/
 	
-	//problem is the id/value pair for the sudoku problem
-	//solution is the partner solution
-	//(See Excel sheet for easy creation/manipulation.)
-	
-
-	//*NOTE* mysudoku.problem is a GLOBAL VARIABLE. value key pairs are required in IE
-	//mysudoku = {problem:problem1, solution:solution1};
-	
 	//some special jquery stuff called to handle input text
 	$(document).ready(function(){
 		
@@ -875,7 +869,6 @@ function onLoad(loadtype) {
 
 function loadNewList(){
 	// get the sudokuXMLfileNo to figure which problem to load.
-	//mysudoku = {problem: $.extend( {},problem1),solution:$.extend( {},solution1)};
 	
 	if (sudokuXMLfileNo === 1){
 		mysudoku.problem = $.extend( {}, problem1);
@@ -908,14 +901,14 @@ function loadProblem(){
 		Source notes: http://www.quirksmode.org/js/associative.html
 		https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects
 	*/
-	 
-
-	var alltd = document.getElementsByTagName("td");
+	var alltd, x, i, mycell;
+	
+	alltd = document.getElementsByTagName("td");
 		
-	for (var x in mysudoku.problem){
+	for (x in mysudoku.problem){
 		//alert("mysudoku.problem." + x + " = " + mysudoku.problem[x]);
-		for (var i=0; i < alltd.length; i++){
-			var mycell = alltd[i];
+		for (i = 0; i < alltd.length; i++){
+			mycell = alltd[i];
 			if (x != ''){
 				if (mycell.parentElement.parentElement.parentElement.className === "subTable") {
 					if (mycell.id === x){
@@ -927,7 +920,6 @@ function loadProblem(){
 			}
 		}
 	}
-	return;
 }
 //
 function updateProblem(mycellid, mygrpid){
@@ -941,12 +933,12 @@ function updateProblem(mycellid, mygrpid){
 		Source notes: http://www.quirksmode.org/js/associative.html
 		https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects
 	*/
-	var mytextarea = document.getElementById(mycellid).childNodes[0];
+	var mytextarea;
+	mytextarea = document.getElementById(mycellid).childNodes[0];
 	mysudoku.problem[mycellid] = mytextarea.value;
 	
 	validateProblem(mycellid, mygrpid, mytextarea);
-	
-	return;
+
 }
 //
 function loadSolution(){
@@ -957,12 +949,12 @@ function loadSolution(){
 		click event.
 	*--------------------------
 	*/
-
+	var alltd, x, i, mycell;
 	
-	var alltd = document.getElementsByTagName("td");
-	for (var x in mysudoku.solution){
+	alltd = document.getElementsByTagName("td");
+	for (x in mysudoku.solution){
 		//alert("mysudoku.solution." + x + " = " + mysudoku.solution[x]);
-		for (var i=0; i < alltd.length; i++){
+		for (i = 0; i < alltd.length; i++){
 			var mycell = alltd[i];
 			
 			if (mycell.id === x){
@@ -972,7 +964,6 @@ function loadSolution(){
 			}
 		}
 	}
-	return;
 }
 	
 function setTextArea(){
@@ -983,28 +974,26 @@ function setTextArea(){
 		by the user. Called on page load.
 	*--------------------------
 	*/
-	var alltd = document.getElementsByTagName("td");
+	var alltd, i, mycell, node, subtableid, updateProblemArgs;
+	alltd = document.getElementsByTagName("td");
 	
-	for (var i=0; i < alltd.length; i++){
-		var mcell = alltd[i];
+	for (i = 0; i < alltd.length; i++){
+		mycell = alltd[i];
 		//remove highlighted cells if this was part of a page reload.
-		mcell.removeAttribute("style");
-		if (mcell.parentElement.parentElement.parentElement.className === "subTable") {
-			if (mcell.innerHTML === ''){
-				var node = document.createElement("textarea"); 
+		mycell.removeAttribute("style");
+		if (mycell.parentElement.parentElement.parentElement.className === "subTable") {
+			if (mycell.innerHTML === ''){
+				node = document.createElement("textarea"); 
 				node.setAttribute("maxlength","1");
-				
-				var subtableid = mcell.parentElement.parentElement.parentElement.id;
-				
-				mcell.appendChild(node);
+				subtableid = mycell.parentElement.parentElement.parentElement.id;
+				mycell.appendChild(node);
 				
 				//a function added to the element
-				var updateProblemArgs = "updateProblem('" + mcell.id +  "'," + subtableid + ")";
+				updateProblemArgs = "updateProblem('" + mycell.id +  "'," + subtableid + ")";
 				node.setAttribute("onchange", updateProblemArgs);				
 			}
 		}
 	}	
-	return;
 }
 
 //
@@ -1040,10 +1029,8 @@ function evalCellVal(){
 		//otherwise, ignore all keystrokes.
 		else {
 			event.preventDefault();
-			}
-		return;
+		}
 	});
-	return;
 }
 
 //
@@ -1056,21 +1043,24 @@ function validateProblem(mycellid, mygrpid, mytextarea){
 		and if so, calls a function to highlight the cell.
 	*--------------------------
 	*/
-	var myletter = mycellid.substring(0,1);
-	var mynum = mycellid.substring(1,2);
+	var myletter, mynum, otherletter, othernum, othergrpid,
+			z, x;
+	myletter = mycellid.substring(0,1);
+	mynum = mycellid.substring(1,2);
 	
 	
 	//remove conflicts to changed cell
 	errors[mycellid] = [];
 	//remove existing conflicts from the neighbor cells on the old value
-	for (var z in errors){
+	for (z in errors){
 		
-		var otherletter = z.substring(0,1);
-		var othernum = z.substring(1,2);
-		var othergrpid = document.getElementById(z).parentElement.parentElement.parentElement.id;
+		otherletter = z.substring(0,1);
+		othernum = z.substring(1,2);
+		othergrpid = document.getElementById(z).parentElement.parentElement.parentElement.id;
 		
 		//alert(errors[z].toString());
-		if (otherletter === myletter || othernum === mynum || othergrpid === mygrpid || [z].length > 0 || mytextarea.value.toString() === ''){
+		if (otherletter === myletter || othernum === mynum || othergrpid === mygrpid || [z].length > 0 || 
+				mytextarea.value.toString() === ''){
 			if (errors[z].indexOf(mycellid) != -1){
 				errors[z].splice(errors[z].indexOf(mycellid), 1);
 				//alert("removing value " + mycellid + " from cell: " + z);
@@ -1082,12 +1072,12 @@ function validateProblem(mycellid, mygrpid, mytextarea){
 	if (mytextarea.value != ''){
 		//alert("the value is null. removing highlight if exists.");
 		
-		for (var x in mysudoku.problem){
+		for (x in mysudoku.problem){
 			//loop through all cells and check if they are a match.
 			
-			var otherletter = x.substring(0,1);
-			var othernum = x.substring(1,2);
-			var othergrpid = document.getElementById(x).parentElement.parentElement.parentElement.id;
+			otherletter = x.substring(0,1);
+			othernum = x.substring(1,2);
+			othergrpid = document.getElementById(x).parentElement.parentElement.parentElement.id;
 			if (x === mycellid){
 				//avoid comparing the cell to itself.
 				continue; 	
@@ -1100,15 +1090,12 @@ function validateProblem(mycellid, mygrpid, mytextarea){
 					errors[x].push(mycellid);
 					errors[mycellid].push(x);
 					//alert("adding a value to errors " + x + " is getting " + mycellid + " added");
-				}
-				
+				}	
 			}
 		}
 	}
 	//finally loop through ALL cells and add/remove highlighting as necessary
 	highlightCells();
-	
-	return;
 }
 //	
 function highlightCells(){
@@ -1119,7 +1106,8 @@ function highlightCells(){
 		ones with an error in them.
 	*--------------------------
 	*/
-	for (var z in errors){
+	var z;
+	for (z in errors){
 		
 		if (errors[z].length > 0){
 			//alert("the length of " + z + " is " + errors[z].length);
@@ -1134,18 +1122,6 @@ function highlightCells(){
 	return;
 }
 //
-function toggleButtons(){
-	/*---------------------
-		toggleButtons is a little function called to  
-		show and hide different buttons based on creating
-		or solving a sudoku. 
-	*--------------------------
-	*/
-	//document.getElementById("create").setAttribute("disabled","true");
-	
-}
-
-
 function evaluateProblem(){
  /*---------------------
 		evaluateProblem is called by  
@@ -1155,16 +1131,18 @@ function evaluateProblem(){
 		revert it to this status. 
 	*--------------------------
 	*/
-	//alert("evaluateProblem called");
-	var count = 0;
-	var mystring = "";
+	var count, mystring, time_beg, solver, x, 
+			time_end, time, i, c;
+ 
+	count = 0;
+	mystring = "";
 	for (i in mysudoku.problem){
 		if (mysudoku.problem[i] != ""){
 			count = count + 1
-			mystring = mystring + mysudoku.problem[i]
+			mystring += mysudoku.problem[i]
 		}
 		else {
-			mystring = mystring + ".";
+			mystring += ".";
 		}
 	}
 	if (count < 15){
@@ -1173,16 +1151,15 @@ function evaluateProblem(){
 	}
 	
 	//alert(mystring);
-	var time_beg = new Date().getTime();
-	
-	var solver = sudoku_solver();
-	var x = solver(mystring);
-	//document.getElementById("problemnotes").innerHTML = x[0]; //this should be the solution
+	//[todo], shouldn't time end be returned with a callback of some sort?
+	time_beg = new Date().getTime();
+	solver = sudoku_solver();
+	x = solver(mystring);
 	//alert(typeof(x));
 	//alert(x[0].join('') + "\n");
 	
-	var time_end = new Date().getTime();
-	var time = (time_end - time_beg)/1000.0;
+	time_end = new Date().getTime();
+	time = (time_end - time_beg)/1000.0;
 	document.getElementById("problemnotes").innerHTML += "<br />" + time;
 	if (x.length === 0) {
 		document.getElementById("problemnotes").innerHTML += "<br />This problem has no Solution";
@@ -1194,7 +1171,7 @@ function evaluateProblem(){
 			document.getElementById("problemnotes").innerHTML += "<br />Unique Solution";
 			document.getElementById("validation").innerHTML = "<img src='images/check.png' style='width:24px' alt='check'/>"
 			
-			var i = 0;
+			i = 0;
 			for (c in mysudoku.solution){
 				mysudoku.solution[c] = x[0][i];
 				i++
@@ -1211,9 +1188,8 @@ function evaluateProblem(){
 		}
 	}
 	
-	
 	//solve(mystring);
-	
+
 }
  
 		
